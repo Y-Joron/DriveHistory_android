@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/text_create_track_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/create_track_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <View
+        android:id="@+id/space_edit_track_start"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/edit_track_title"
+        app:layout_constraintEnd_toStartOf="@id/edit_track_title"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/edit_track_title" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edit_track_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_shape"
+        android:inputType="text"
+        android:lines="1"
+        android:maxLines="1"
+        android:maxLength="30"
+        android:padding="2dp"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/space_edit_track_end"
+        app:layout_constraintHorizontal_weight="8"
+        app:layout_constraintStart_toEndOf="@id/space_edit_track_start"
+        app:layout_constraintTop_toTopOf="@id/text_create_track_title" />
+
+    <View
+        android:id="@+id/space_edit_track_end"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/edit_track_title"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/edit_track_dialog_button_negative"
+        android:layout_width="128dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/button_capsule_shape_white"
+        android:minHeight="40dp"
+        android:text="@string/back"
+        android:textColor="@color/black"
+        android:textSize="14dp"
+        app:layout_constraintTop_toBottomOf="@id/edit_track_title"
+        app:layout_constraintEnd_toStartOf="@id/edit_track_dialog_button_positive"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/edit_track_dialog_button_positive"
+        android:layout_width="128dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_capsule_shape_darkgreen"
+        android:minHeight="40dp"
+        android:text="@string/create"
+        android:textColor="@color/white"
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/edit_track_dialog_button_negative"
+        app:layout_constraintTop_toTopOf="@id/edit_track_dialog_button_negative" />
+
+    <!-- 下部のマージン -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        app:layout_constraintTop_toBottomOf="@id/edit_track_dialog_button_negative" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

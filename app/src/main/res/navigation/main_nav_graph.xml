@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/library_fragment">
+
+    <fragment
+        android:id="@+id/library_fragment"
+        android:name="com.joron.waffle.drivehistory.presentation.LibraryFragment"
+        tools:layout="@layout/library_fragment">
+
+        <action
+            android:id="@+id/library_to_map_nav"
+            app:destination="@id/map_fragment">
+            <argument
+                android:name="trackUuid"
+                app:argType="string" />
+        </action>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/map_fragment"
+        android:name="com.joron.waffle.drivehistory.presentation.MapFragment"
+        tools:layout="@layout/map_fragment">
+
+        <argument
+            android:name="trackUuid"
+            app:argType="string" />
+
+    </fragment>
+
+</navigation>

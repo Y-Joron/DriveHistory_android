@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">DriveHistory</string>
+    <string name="channel_name">移動の記録</string>
+    <string name="channel_description">移動の記録中です</string>
+    <string name="no_registrable_stamp_spot">現在位置でスタンプ登録可能なPASAはありません.</string>
+    <string name="back">戻る</string>
+    <string name="create">作成</string>
+    <string name="create_track_title">新規作成</string>
+    <string name="library">ライブラリ</string>
+</resources>

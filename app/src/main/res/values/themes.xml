@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.DriveHistory" parent="Theme.AppCompat.Light.NoActionBar" />
+
+    <style name="AppToolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
+
+    <style name="MyAlertBaseDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:textColor">#FF0000</item>
+    </style>
+
+    <style name="MyAlertDialogStyle" parent="MyAlertBaseDialogStyle">
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
+
+    <style name="AppCommonDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+        <item name="android:windowBackground">@drawable/app_common_dialog_shape</item>
+    </style>
+</resources>
