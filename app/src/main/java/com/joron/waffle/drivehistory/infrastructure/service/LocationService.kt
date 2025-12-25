@@ -75,7 +75,7 @@ class LocationService : Service() {
             3000,
         ).apply {
             setMinUpdateIntervalMillis(3000)
-            setMinUpdateDistanceMeters(1f)
+            setMinUpdateDistanceMeters(5f)
         }.build()
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
