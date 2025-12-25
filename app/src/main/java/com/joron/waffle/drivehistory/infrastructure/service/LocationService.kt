@@ -18,6 +18,14 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.joron.waffle.drivehistory.domain.LocationUsecase
+import com.joron.waffle.drivehistory.domain.TrackUsecase
+import com.joron.waffle.drivehistory.util.KEY_TRACK_UUID
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LocationService : Service() {
 
@@ -26,7 +34,10 @@ class LocationService : Service() {
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationNotification: LocationNotification
     private val locationUsecase = LocationUsecase()
+    private val trackUsecase = TrackUsecase()
     private var locationListener: DriveLocationListener? = null
+
+    private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     inner class LocationServiceBinder : Binder() {
         val service: LocationService
@@ -38,7 +49,6 @@ class LocationService : Service() {
     override fun onCreate() {
         super.onCreate()
         Log.d(TAG, "onCreate() threadName = ${Thread.currentThread().name} ")
-        ALIVE = true
         createLocationApi()
     }
 
@@ -49,6 +59,7 @@ class LocationService : Service() {
     ): Int {
         super.onStartCommand(intent, flags, startId)
         Log.d(TAG, "onStartCommand() threadName = ${Thread.currentThread().name} ")
+        applyIntent(intent)
         locationNotification = LocationNotification()
         val notification = locationNotification.create(this)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -58,11 +69,46 @@ class LocationService : Service() {
         return START_STICKY
     }
 
+    private fun applyIntent(intent: Intent?) {
+        Log.d(TAG, "enter applyIntent")
+        intent?.apply {
+            val trackUuid = getStringExtra(KEY_TRACK_UUID) ?: ""
+            Log.d(TAG, "applyIntent trackUuid = $trackUuid")
+            if (trackUuid.isNotEmpty()) {
+                trackUsecase.setRecordingTrackUuid(trackUuid)
+            }
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "onDestroy() threadName = ${Thread.currentThread().name} ")
         stopLocationUpdate()
-        ALIVE = false
+        stopRecording()
+    }
+
+    fun stopRecording() {
+        serviceScope.launch(Dispatchers.IO) {
+            // DBからのと、preferenceからのを結合して、軌跡情報を保存する
+            val track = trackUsecase.queryTrackItem(
+                this@LocationService,
+                trackUsecase.getRecordingTrackUuid()
+            )
+            val locationsPref = locationUsecase.getLocationPref(this@LocationService)
+            Log.d(TAG, "track = $track, locationsPref = $locationsPref")
+            trackUsecase.updateTrackLocation(
+                this@LocationService,
+                track.trackUuid,
+                track.locationList + locationsPref
+            )
+
+            withContext(Dispatchers.Main) {
+                // 記録停止状態 + Preferenceの軌跡情報消去
+                trackUsecase.setRecordingTrackUuid("")
+                locationUsecase.clearLocationsPref(this@LocationService)
+                serviceScope.cancel()
+            }
+        }
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -133,6 +179,5 @@ class LocationService : Service() {
     companion object {
         private const val TAG = "LocationService"
         const val NOTIFICATION_ID = 101
-        var ALIVE = false
     }
 }

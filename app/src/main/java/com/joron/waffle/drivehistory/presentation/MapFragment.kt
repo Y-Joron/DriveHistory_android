@@ -41,17 +41,17 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         binding.mapViewModel = mapViewModel
         binding.lifecycleOwner = this
         lifecycle.addObserver(mapViewModel)
+        val trackUuid = args.trackUuid
         binding.buttonRecord.setOnClickListener {
             val recording = mapViewModel.recording.value ?: return@setOnClickListener
             if (recording) {
+                mapViewModel.stopRecording()
                 (activity as? MainActivity)?.stopLocationService()
-                mapViewModel.stopRecording(activity)
             } else {
-                (activity as? MainActivity)?.startLocationService()
-                mapViewModel.startRecording(activity)
+                mapViewModel.startRecording()
+                (activity as? MainActivity)?.startLocationService(trackUuid)
             }
         }
-        val trackUuid = args.trackUuid
 
         mapViewModel.load(activity, trackUuid)
         mapViewModel.recording.observe(activity, Observer {

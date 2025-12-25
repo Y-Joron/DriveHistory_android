@@ -14,6 +14,9 @@ data class TrackItem(
     var locationList: List<LatLng> = emptyList(),
     val createdTime: Int = 0,
 ) {
+    val valid: Boolean
+        get() = trackUuid.isNotEmpty()
+
     companion object {
         fun fromEntity(entity: TrackEntity): TrackItem {
             val trackUuid = entity.trackUuid

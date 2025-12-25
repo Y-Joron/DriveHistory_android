@@ -6,6 +6,7 @@ import com.joron.waffle.drivehistory.domain.model.TrackItem
 import com.joron.waffle.drivehistory.domain.type.TrackStatus
 import com.joron.waffle.drivehistory.infrastructure.model.database.TrackEntity
 import com.joron.waffle.drivehistory.infrastructure.repository.TrackDbRepository
+import com.joron.waffle.drivehistory.infrastructure.repository.TrackRepository
 import com.joron.waffle.drivehistory.util.LocationHelper
 
 class TrackUsecase {
@@ -46,6 +47,18 @@ class TrackUsecase {
 
     suspend fun updateTrackStatus(context: Context, trackUuid: String, status: TrackStatus) {
         TrackDbRepository.updateTrackStatus(context, trackUuid, status)
+    }
+
+    fun getRecordingTrackUuid(): String {
+        return TrackRepository.recordingTrackUuid
+    }
+
+    fun isRecording(): Boolean {
+        return TrackRepository.recordingTrackUuid.isNotEmpty()
+    }
+
+    fun setRecordingTrackUuid(uuid: String) {
+        TrackRepository.recordingTrackUuid = uuid
     }
 
 }

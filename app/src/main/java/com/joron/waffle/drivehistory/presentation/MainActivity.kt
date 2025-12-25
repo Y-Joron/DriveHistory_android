@@ -11,6 +11,7 @@ import com.joron.waffle.drivehistory.databinding.MainActivityBinding
 import com.joron.waffle.drivehistory.domain.viewmodel.MainViewModel
 import com.joron.waffle.drivehistory.infrastructure.service.DriveLocationListener
 import com.joron.waffle.drivehistory.infrastructure.service.LocationService
+import com.joron.waffle.drivehistory.util.KEY_TRACK_UUID
 
 class MainActivity : AppCompatActivity() {
 
@@ -44,8 +45,8 @@ class MainActivity : AppCompatActivity() {
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (LocationService.ALIVE) {
-            // 位置情報サービス起動中であれば、バインドする
+        if (mainViewModel.isRecording()) {
+            // 記録中(位置情報サービス起動中)であれば、バインドする
             bindLocationService()
         }
     }
@@ -56,12 +57,14 @@ class MainActivity : AppCompatActivity() {
         unbindLocationService()
     }
 
-    fun startLocationService() {
+    fun startLocationService(trackUuid: String) {
         if (isBoundService) {
             Log.d(TAG, "It is already bound LocationService.")
             return
         }
-        val intent = Intent(this, LocationService::class.java)
+        val intent = Intent(this, LocationService::class.java).apply {
+            putExtra(KEY_TRACK_UUID, trackUuid)
+        }
         startService(intent)
         bindLocationService()
     }
