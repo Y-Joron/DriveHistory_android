@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.DriveHistory" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="Theme.DriveHistory" parent="Theme.AppCompat.DayNight.NoActionBar" />
 
     <style name="AppToolbar" parent="Widget.AppCompat.Toolbar">
         <item name="android:textColorSecondary">@color/white</item>

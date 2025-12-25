@@ -3,10 +3,14 @@ package com.joron.waffle.drivehistory.presentation
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.joron.waffle.drivehistory.databinding.MainActivityBinding
 import com.joron.waffle.drivehistory.domain.viewmodel.MainViewModel
 import com.joron.waffle.drivehistory.infrastructure.service.DriveLocationListener
@@ -44,10 +48,28 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        applySafeArea(binding.root)
 
         if (mainViewModel.isRecording()) {
             // 記録中(位置情報サービス起動中)であれば、バインドする
             bindLocationService()
+        }
+    }
+
+    private fun applySafeArea(root: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            root.setPadding(
+                systemBars.left,
+                systemBars.top,
+                systemBars.right,
+                systemBars.bottom,
+            )
+            insets
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // Edge to Edge のステータスバー透明化を無効化
+            getWindow().setStatusBarContrastEnforced(true)
         }
     }
 

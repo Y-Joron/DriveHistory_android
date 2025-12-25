@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
-            android:backgroundTint="@color/red"
+            android:background="@color/red"
             android:elevation="4dp"
             android:gravity="center_vertical"
             app:theme="@style/AppToolbar">
@@ -39,7 +39,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     android:gravity="center"
                     android:text="aaa"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
