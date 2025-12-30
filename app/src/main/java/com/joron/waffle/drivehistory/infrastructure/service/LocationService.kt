@@ -136,10 +136,7 @@ class LocationService : Service() {
                         location.latitude,
                         location.longitude,
                     )
-                    locationListener?.onUpdatedLocation(
-                        location.latitude,
-                        location.longitude,
-                    )
+                    locationListener?.onUpdatedLocation(location)
                 }
             }
         }

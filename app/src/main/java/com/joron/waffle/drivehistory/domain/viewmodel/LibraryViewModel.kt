@@ -1,6 +1,7 @@
 package com.joron.waffle.drivehistory.domain.viewmodel
 
 import android.content.Context
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -50,8 +51,8 @@ class LibraryViewModel : ViewModel(), LifecycleEventObserver {
         }
     }
 
-    fun notifyUpdateLocation(latitude: Double, longitude: Double) {
-        locationUsecase.notifyUpdateLocation(latitude, longitude)
+    fun notifyUpdateLocation(location: Location) {
+        locationUsecase.notifyUpdateLocation(location)
     }
 
     override fun onStateChanged(

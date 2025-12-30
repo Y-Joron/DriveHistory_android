@@ -1,6 +1,7 @@
 package com.joron.waffle.drivehistory.domain.viewmodel
 
 import android.content.Context
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -24,12 +25,14 @@ class MapViewModel : ViewModel(), LifecycleEventObserver {
 
     var recording = MutableLiveData(false)
     var locationList = MutableLiveData(emptyList<LatLng>())
+    var accuracy = MutableLiveData(0f)
+    var speed = MutableLiveData(0f)
+    var speed2 = MutableLiveData(0f)
+    var altitude = MutableLiveData(0.0)
 
     var trackItem = TrackItem()
     val locationEventListener = LocationEventListener(
-        onUpdateLocation = { lat, lng ->
-            onUpdateLocation(lat, lng)
-        }
+        onUpdateLocation = { onUpdateLocation(it) }
     )
 
     fun load(context: Context, trackUuid: String) {
@@ -73,15 +76,22 @@ class MapViewModel : ViewModel(), LifecycleEventObserver {
         }
     }
 
-    private fun onUpdateLocation(latitude: Double, longitude: Double) {
+    private fun onUpdateLocation(location: Location) {
         val tmpRecording = recording.value ?: return
         if (!tmpRecording) {
             return
         }
-        Log.d(TAG, "onUpdateLocation latitude = $latitude, longitude = $longitude")
+        Log.d(
+            TAG,
+            "onUpdateLocation latitude = ${location.latitude}, longitude = ${location.longitude}"
+        )
         val loList = (locationList.value ?: return).toMutableList()
-        loList += LatLng(latitude, longitude)
+        loList += LatLng(location.latitude, location.longitude)
         locationList.value = loList
+        accuracy.value = location.accuracy
+        speed.value = location.speed
+        speed2.value = location.speed * 3.6f
+        altitude.value = location.altitude
     }
 
     fun startRecording() {

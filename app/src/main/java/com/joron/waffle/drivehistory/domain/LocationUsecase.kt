@@ -1,6 +1,7 @@
 package com.joron.waffle.drivehistory.domain
 
 import android.content.Context
+import android.location.Location
 import com.google.android.gms.maps.model.LatLng
 import com.joron.waffle.drivehistory.infrastructure.repository.LocationRepository
 import com.joron.waffle.drivehistory.infrastructure.repository.PreferenceRepository
@@ -8,8 +9,8 @@ import com.joron.waffle.drivehistory.util.LocationHelper
 
 class LocationUsecase {
 
-    fun notifyUpdateLocation(latitude: Double, longitude: Double) {
-        LocationRepository.notifyUpdateLocation(latitude, longitude)
+    fun notifyUpdateLocation(location: Location) {
+        LocationRepository.notifyUpdateLocation(location)
     }
 
     fun addLocationEventListener(key: String, listener: LocationEventListener) {

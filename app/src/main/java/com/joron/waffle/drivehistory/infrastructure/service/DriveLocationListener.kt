@@ -1,5 +1,7 @@
 package com.joron.waffle.drivehistory.infrastructure.service
 
+import android.location.Location
+
 interface DriveLocationListener {
-    fun onUpdatedLocation(latitude: Double, longitude: Double)
+    fun onUpdatedLocation(location: Location)
 }

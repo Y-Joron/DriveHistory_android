@@ -3,6 +3,7 @@ package com.joron.waffle.drivehistory.presentation
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
+import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
@@ -30,9 +31,12 @@ class MainActivity : AppCompatActivity() {
             this@MainActivity.service =
                 (service as LocationService.LocationServiceBinder).service
             this@MainActivity.service?.setLocationListener(object : DriveLocationListener {
-                override fun onUpdatedLocation(latitude: Double, longitude: Double) {
-                    Log.d(TAG, "onUpdatedLocation latitude = $latitude, longitude = $longitude")
-                    mainViewModel.notifyUpdateLocation(latitude, longitude)
+                override fun onUpdatedLocation(location: Location) {
+                    Log.d(
+                        TAG,
+                        "onUpdatedLocation latitude = ${location.latitude}, longitude = ${location.longitude}"
+                    )
+                    mainViewModel.notifyUpdateLocation(location)
                 }
             })
         }

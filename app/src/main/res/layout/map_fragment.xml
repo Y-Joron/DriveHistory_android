@@ -55,6 +55,50 @@
             android:layout_height="wrap_content"
             tools:context=".presentation.MapFragment" />
 
+        <TextView
+            android:id="@+id/text_accuracy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text='@{"accuracy: " + String.valueOf(mapViewModel.accuracy)}'
+            android:textSize="14dp"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/text_speed"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/text_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text='@{String.valueOf(mapViewModel.speed) + " [km/h]"}'
+            android:textSize="14dp"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/text_speed2"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/text_speed2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text='@{String.valueOf(mapViewModel.speed2) + " [m/s]"}'
+            android:textSize="14dp"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@id/altitude"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/altitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text='@{String.valueOf(mapViewModel.altitude) + " [m]"}'
+            android:textSize="14dp"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/button_record"
             android:layout_width="wrap_content"
