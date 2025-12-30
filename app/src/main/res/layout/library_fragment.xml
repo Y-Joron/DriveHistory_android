@@ -19,7 +19,7 @@
             android:id="@+id/tool_bar_library"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/red"
+            android:background="@color/accent"
             android:gravity="center_vertical"
             android:theme="@style/AppToolbar"
             app:layout_constraintTop_toTopOf="parent">
@@ -32,14 +32,14 @@
                     android:id="@+id/text_tool_bar_title_library"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:text="@string/library"
+                    android:textColor="@color/white"
                     android:textSize="18dp"
                     android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:gravity="center"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -49,6 +49,8 @@
             android:id="@+id/library_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:divider="@color/white"
+            android:dividerHeight="1dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tool_bar_library" />
@@ -58,10 +60,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            app:srcCompat="@drawable/outline_add_24"
-            app:backgroundTint="#00BCD4"
+            app:backgroundTint="@color/accent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/outline_add_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
