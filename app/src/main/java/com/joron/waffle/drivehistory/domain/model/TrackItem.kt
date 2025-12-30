@@ -18,12 +18,15 @@ data class TrackItem(
         get() = trackUuid.isNotEmpty()
 
     companion object {
-        fun fromEntity(entity: TrackEntity): TrackItem {
+        fun fromEntity(
+            entity: TrackEntity,
+            locations: String = "",
+        ): TrackItem {
             val trackUuid = entity.trackUuid
             val activeType = ActiveType.valueOf(entity.activeType)
             val status = TrackStatus.valueOf(entity.status)
             val title = entity.title
-            val locationList = LocationHelper.toLocationList(entity.locations)
+            val locationList = LocationHelper.toLocationList(locations)
             val createdTime = entity.createdTime
             return TrackItem(
                 trackUuid,

@@ -27,11 +27,6 @@ object TrackDbRepository {
         dao.upsertTrackList(trackList)
     }
 
-    suspend fun updateTrackLocation(context: Context, trackUuid: String, locations: String) {
-        val dao = DriveHistoryDatabase.getInstance(context).getDao()
-        dao.updateTrackLocation(trackUuid, locations)
-    }
-
     suspend fun initTrackStatus(context: Context) {
         val dao = DriveHistoryDatabase.getInstance(context).getDao()
         dao.initTrackStatus()

@@ -39,14 +39,6 @@ interface Dao {
 
     @Query(
         """
-        UPDATE ${TrackEntity.TABLE_NAME_TRACK} SET ${TrackEntity.COLUMN_NAME_LOCATIONS} = :locations
-            WHERE ${TrackEntity.COLUMN_NAME_TRACK_UUID} = :trackUuid
-    """
-    )
-    suspend fun updateTrackLocation(trackUuid: String, locations: String)
-
-    @Query(
-        """
         UPDATE ${TrackEntity.TABLE_NAME_TRACK} SET ${TrackEntity.COLUMN_NAME_STATUS} = ${TrackStatus.VALUE_INITIALIZE}
     """
     )

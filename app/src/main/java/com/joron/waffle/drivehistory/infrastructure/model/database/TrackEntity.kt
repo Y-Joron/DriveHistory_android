@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey
 import com.joron.waffle.drivehistory.domain.model.TrackItem
 import com.joron.waffle.drivehistory.domain.type.ActiveType
 import com.joron.waffle.drivehistory.domain.type.TrackStatus
-import com.joron.waffle.drivehistory.util.LocationHelper
 
 @Entity(tableName = TrackEntity.TABLE_NAME_TRACK)
 class TrackEntity {
@@ -23,9 +22,6 @@ class TrackEntity {
     @ColumnInfo(name = COLUMN_NAME_TITLE)
     var title: String = ""
 
-    @ColumnInfo(name = COLUMN_NAME_LOCATIONS)
-    var locations: String = ""
-
     @ColumnInfo(name = COLUMN_NAME_CREATED_TIME)
     var createdTime: Int = 0
 
@@ -35,7 +31,6 @@ class TrackEntity {
         const val COLUMN_NAME_TITLE = "title"
         const val COLUMN_NAME_ACTIVE_TYPE = "active_type"
         const val COLUMN_NAME_STATUS = "status"
-        const val COLUMN_NAME_LOCATIONS = "locations"
         const val COLUMN_NAME_CREATED_TIME = "created_time"
 
         fun fromItem(item: TrackItem): TrackEntity {
@@ -44,7 +39,6 @@ class TrackEntity {
                 activeType = item.activeType.value
                 status = item.status.value
                 title = item.title
-                locations = LocationHelper.toLocationStr(item.locationList)
                 createdTime = item.createdTime
             }
         }
