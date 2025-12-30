@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text='@{"accuracy: " + String.valueOf(mapViewModel.accuracy)}'
-            android:textSize="14dp"
+            android:textSize="28dp"
             android:textColor="@color/black"
             app:layout_constraintBottom_toTopOf="@id/text_speed"
             app:layout_constraintStart_toStartOf="parent" />
@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text='@{String.valueOf(mapViewModel.speed) + " [km/h]"}'
-            android:textSize="14dp"
+            android:textSize="28dp"
             android:textColor="@color/black"
             app:layout_constraintBottom_toTopOf="@id/text_speed2"
             app:layout_constraintStart_toStartOf="parent" />
@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text='@{String.valueOf(mapViewModel.speed2) + " [m/s]"}'
-            android:textSize="14dp"
+            android:textSize="28dp"
             android:textColor="@color/black"
             app:layout_constraintBottom_toTopOf="@id/altitude"
             app:layout_constraintStart_toStartOf="parent" />
@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:text='@{String.valueOf(mapViewModel.altitude) + " [m]"}'
-            android:textSize="14dp"
+            android:textSize="28dp"
             android:textColor="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
