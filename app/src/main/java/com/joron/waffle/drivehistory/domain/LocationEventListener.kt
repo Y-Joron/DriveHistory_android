@@ -1,7 +1,7 @@
 package com.joron.waffle.drivehistory.domain
 
-import android.location.Location
+import com.joron.waffle.drivehistory.domain.model.LocationItem
 
 data class LocationEventListener(
-    val onUpdateLocation: ((location: Location) -> Unit)?
+    val onUpdateLocation: ((location: LocationItem) -> Unit)?
 )

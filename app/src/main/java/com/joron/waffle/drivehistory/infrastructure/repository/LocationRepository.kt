@@ -1,13 +1,13 @@
 package com.joron.waffle.drivehistory.infrastructure.repository
 
-import android.location.Location
 import com.joron.waffle.drivehistory.domain.LocationEventListener
+import com.joron.waffle.drivehistory.domain.model.LocationItem
 
 object LocationRepository {
 
     val locationEventMap = mutableMapOf<String, LocationEventListener>()
 
-    fun notifyUpdateLocation(location: Location) {
+    fun notifyUpdateLocation(location: LocationItem) {
         for (event in locationEventMap.values) {
             event.onUpdateLocation?.invoke(location)
         }

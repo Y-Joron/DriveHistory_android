@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 import com.joron.waffle.drivehistory.R
 import com.joron.waffle.drivehistory.databinding.MapFragmentBinding
+import com.joron.waffle.drivehistory.domain.model.LocationItem
 import com.joron.waffle.drivehistory.domain.viewmodel.MapViewModel
 
 class MapFragment : Fragment(), OnMapReadyCallback {
@@ -91,10 +92,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         )
     }
 
-    private fun observeLocationList(locationList: List<LatLng>) {
+    private fun observeLocationList(locationList: List<LocationItem>) {
         mapViewModel.trackItem = mapViewModel.trackItem.copy(locationList = locationList)
+        val latlngList = locationList.map {
+            LatLng(it.latitude, it.longitude)
+        }
         val lineOptions = PolylineOptions()
-            .addAll(locationList)
+            .addAll(latlngList)
             .width(8f)
             .color(
                 ContextCompat.getColor(

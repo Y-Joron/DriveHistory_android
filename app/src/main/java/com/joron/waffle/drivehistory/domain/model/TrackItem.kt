@@ -1,6 +1,5 @@
 package com.joron.waffle.drivehistory.domain.model
 
-import com.google.android.gms.maps.model.LatLng
 import com.joron.waffle.drivehistory.domain.type.ActiveType
 import com.joron.waffle.drivehistory.domain.type.TrackStatus
 import com.joron.waffle.drivehistory.infrastructure.model.database.TrackEntity
@@ -11,7 +10,7 @@ data class TrackItem(
     val activeType: ActiveType = ActiveType.UNKNOWN,
     val status: TrackStatus = TrackStatus.INITIALIZE,
     val title: String = "",
-    var locationList: List<LatLng> = emptyList(),
+    var locationList: List<LocationItem> = emptyList(),
     val createdTime: Long = 0,
 ) {
     val valid: Boolean

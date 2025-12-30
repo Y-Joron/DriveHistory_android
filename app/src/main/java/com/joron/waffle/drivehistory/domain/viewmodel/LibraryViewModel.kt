@@ -1,7 +1,6 @@
 package com.joron.waffle.drivehistory.domain.viewmodel
 
 import android.content.Context
-import android.location.Location
 import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -11,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.joron.waffle.drivehistory.domain.LocationUsecase
 import com.joron.waffle.drivehistory.domain.TrackUsecase
+import com.joron.waffle.drivehistory.domain.model.LocationItem
 import com.joron.waffle.drivehistory.domain.model.TrackItem
 import com.joron.waffle.drivehistory.util.DateTimeHelper
 import com.joron.waffle.drivehistory.util.UuidUtil
@@ -57,7 +57,7 @@ class LibraryViewModel : ViewModel(), LifecycleEventObserver {
         }
     }
 
-    fun notifyUpdateLocation(location: Location) {
+    fun notifyUpdateLocation(location: LocationItem) {
         locationUsecase.notifyUpdateLocation(location)
     }
 

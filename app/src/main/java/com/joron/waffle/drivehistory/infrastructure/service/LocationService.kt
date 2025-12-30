@@ -19,6 +19,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.joron.waffle.drivehistory.domain.LocationUsecase
 import com.joron.waffle.drivehistory.domain.TrackUsecase
+import com.joron.waffle.drivehistory.domain.model.LocationItem
 import com.joron.waffle.drivehistory.util.KEY_TRACK_UUID
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -131,12 +132,12 @@ class LocationService : Service() {
                         TAG,
                         "threadName = ${Thread.currentThread().name} lat = ${location.latitude}, lng = ${location.longitude}"
                     )
+                    val locationItem = LocationItem.fromLocation(location)
                     locationUsecase.addLocationsPref(
                         this@LocationService,
-                        location.latitude,
-                        location.longitude,
+                        locationItem,
                     )
-                    locationListener?.onUpdatedLocation(location)
+                    locationListener?.onUpdatedLocation(locationItem)
                 }
             }
         }

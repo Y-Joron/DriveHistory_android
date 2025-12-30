@@ -1,7 +1,6 @@
 package com.joron.waffle.drivehistory.domain.viewmodel
 
 import android.content.Context
-import android.location.Location
 import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -9,10 +8,10 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.maps.model.LatLng
 import com.joron.waffle.drivehistory.domain.LocationEventListener
 import com.joron.waffle.drivehistory.domain.LocationUsecase
 import com.joron.waffle.drivehistory.domain.TrackUsecase
+import com.joron.waffle.drivehistory.domain.model.LocationItem
 import com.joron.waffle.drivehistory.domain.model.TrackItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,7 +23,7 @@ class MapViewModel : ViewModel(), LifecycleEventObserver {
     val locationUsecase = LocationUsecase()
 
     var recording = MutableLiveData(false)
-    var locationList = MutableLiveData(emptyList<LatLng>())
+    var locationList = MutableLiveData(emptyList<LocationItem>())
     var accuracy = MutableLiveData(0f)
     var speed = MutableLiveData(0f)
     var speed2 = MutableLiveData(0f)
@@ -76,7 +75,7 @@ class MapViewModel : ViewModel(), LifecycleEventObserver {
         }
     }
 
-    private fun onUpdateLocation(location: Location) {
+    private fun onUpdateLocation(location: LocationItem) {
         val tmpRecording = recording.value ?: return
         if (!tmpRecording) {
             return
@@ -86,7 +85,7 @@ class MapViewModel : ViewModel(), LifecycleEventObserver {
             "onUpdateLocation latitude = ${location.latitude}, longitude = ${location.longitude}"
         )
         val loList = (locationList.value ?: return).toMutableList()
-        loList += LatLng(location.latitude, location.longitude)
+        loList += location
         locationList.value = loList
         accuracy.value = location.accuracy
         speed.value = location.speed

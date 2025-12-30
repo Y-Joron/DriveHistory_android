@@ -1,7 +1,6 @@
 package com.joron.waffle.drivehistory.domain.viewmodel
 
 import android.content.Context
-import android.location.Location
 import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -10,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.joron.waffle.drivehistory.domain.LocationUsecase
 import com.joron.waffle.drivehistory.domain.TrackUsecase
+import com.joron.waffle.drivehistory.domain.model.LocationItem
 import com.joron.waffle.drivehistory.domain.model.TrackItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +21,7 @@ class MainViewModel : ViewModel(), LifecycleEventObserver {
 
     var recordingTrack = TrackItem()
 
-    fun notifyUpdateLocation(location: Location) {
+    fun notifyUpdateLocation(location: LocationItem) {
         locationUsecase.notifyUpdateLocation(location)
     }
 
@@ -41,7 +41,7 @@ class MainViewModel : ViewModel(), LifecycleEventObserver {
 
     override fun onStateChanged(
         source: LifecycleOwner,
-        event: Lifecycle.Event
+        event: Lifecycle.Event,
     ) {
         Log.d(TAG, "onStateChanged event = $event")
         when (event) {

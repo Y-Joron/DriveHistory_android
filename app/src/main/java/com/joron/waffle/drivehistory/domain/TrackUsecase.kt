@@ -1,7 +1,7 @@
 package com.joron.waffle.drivehistory.domain
 
 import android.content.Context
-import com.google.android.gms.maps.model.LatLng
+import com.joron.waffle.drivehistory.domain.model.LocationItem
 import com.joron.waffle.drivehistory.domain.model.TrackItem
 import com.joron.waffle.drivehistory.domain.type.TrackStatus
 import com.joron.waffle.drivehistory.infrastructure.model.database.TrackEntity
@@ -44,7 +44,7 @@ class TrackUsecase {
     fun updateTrackLocation(
         context: Context,
         trackUuid: String,
-        locationList: List<LatLng>,
+        locationList: List<LocationItem>,
     ) {
         TrackFileRepository.writeLocations(
             context,
