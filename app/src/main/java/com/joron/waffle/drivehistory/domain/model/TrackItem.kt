@@ -12,7 +12,7 @@ data class TrackItem(
     val status: TrackStatus = TrackStatus.INITIALIZE,
     val title: String = "",
     var locationList: List<LatLng> = emptyList(),
-    val createdTime: Int = 0,
+    val createdTime: Long = 0,
 ) {
     val valid: Boolean
         get() = trackUuid.isNotEmpty()

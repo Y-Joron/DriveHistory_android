@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.joron.waffle.drivehistory.domain.LocationUsecase
 import com.joron.waffle.drivehistory.domain.TrackUsecase
 import com.joron.waffle.drivehistory.domain.model.TrackItem
+import com.joron.waffle.drivehistory.util.DateTimeHelper
 import com.joron.waffle.drivehistory.util.UuidUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -41,9 +42,14 @@ class LibraryViewModel : ViewModel(), LifecycleEventObserver {
         Log.d(TAG, "enter createTrack title = $title")
         viewModelScope.launch(Dispatchers.IO) {
             val trackUuid = UuidUtil.generateUuid()
+            val createdTime = DateTimeHelper.getEpochMillis()
             trackUsecase.upsertTrackItem(
                 context,
-                TrackItem(trackUuid = trackUuid, title = title)
+                TrackItem(
+                    trackUuid = trackUuid,
+                    title = title,
+                    createdTime = createdTime,
+                ),
             )
             withContext(Dispatchers.Main) {
                 onCreated?.invoke(trackUuid)

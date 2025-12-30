@@ -23,7 +23,7 @@ class TrackEntity {
     var title: String = ""
 
     @ColumnInfo(name = COLUMN_NAME_CREATED_TIME)
-    var createdTime: Int = 0
+    var createdTime: Long = 0
 
     companion object {
         const val TABLE_NAME_TRACK = "track"
