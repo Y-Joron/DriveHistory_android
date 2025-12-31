@@ -100,6 +100,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startLocationService(trackUuid: String) {
+        Log.d(TAG, "enter startLocationService")
         val intent = Intent(this, LocationService::class.java).apply {
             putExtra(KEY_TRACK_UUID, trackUuid)
         }
@@ -108,6 +109,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun stopLocationService() {
+        Log.d(TAG, "enter stopLocationService")
         unbindLocationService()
         val intent = Intent(this, LocationService::class.java)
         stopService(intent)
@@ -118,6 +120,7 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "It is already bound LocationService.")
             return
         }
+        Log.d(TAG, "enter bindLocationService")
         val intent = Intent(this, LocationService::class.java)
         isBoundService = bindService(intent, connection, BIND_AUTO_CREATE)
     }
@@ -127,6 +130,7 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "It is not bound LocationService.")
             return
         }
+        Log.d(TAG, "enter unbindLocationService")
         unbindService(connection)
         isBoundService = false
     }
