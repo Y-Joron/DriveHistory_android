@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         val recordingUuid = mainViewModel.getRecordingUuid(this)
         if (recordingUuid.isNotEmpty() && !LocationService.ALIVE) {
+            Log.d(TAG, "If the service is supposed to be running but is not, restart it.")
             // サービスが生きているはずなのに死んでいる場合は、再起動する
             val trackUuid = mainViewModel.getRecordingUuid(this)
             startLocationService(trackUuid)
@@ -64,11 +65,13 @@ class MainActivity : AppCompatActivity() {
 
         if (recordingUuid.isEmpty() && LocationService.ALIVE) {
             // サービスが死んでいるはずなのに生きている場合は、停止する
+            Log.d(TAG, "If the service is supposed to be stopped but is running, stop it.")
             stopLocationService()
         }
 
         if (recordingUuid.isNotEmpty() && LocationService.ALIVE) {
             // 記録中(位置情報サービス起動中)であれば、バインドする
+            Log.d(TAG, "If the service is recording, bind it.")
             bindLocationService()
         }
     }
@@ -97,10 +100,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun startLocationService(trackUuid: String) {
-        if (isBoundService) {
-            Log.d(TAG, "It is already bound LocationService.")
-            return
-        }
         val intent = Intent(this, LocationService::class.java).apply {
             putExtra(KEY_TRACK_UUID, trackUuid)
         }
@@ -115,11 +114,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bindLocationService() {
+        if (isBoundService) {
+            Log.d(TAG, "It is already bound LocationService.")
+            return
+        }
         val intent = Intent(this, LocationService::class.java)
         isBoundService = bindService(intent, connection, BIND_AUTO_CREATE)
     }
 
     private fun unbindLocationService() {
+        if (!isBoundService) {
+            Log.d(TAG, "It is not bound LocationService.")
+            return
+        }
         unbindService(connection)
         isBoundService = false
     }
