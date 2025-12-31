@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +30,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var binding: MapFragmentBinding
     private var mapViewModel = MapViewModel()
     private var gMap: GoogleMap? = null
-    private var polyline: Polyline? = null
+    private var polylineListSolid = mutableListOf<Polyline>()
+    private var polylineListBroken = mutableListOf<Polyline>()
     private val args: MapFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -59,7 +61,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             observeRecording(it)
         })
         mapViewModel.locationList.observe(activity, Observer {
+            Log.d(TAG, "qqqqq it = $it")
             observeLocationList(it)
+        })
+        mapViewModel.locationListSolid.observe(activity, Observer {
+            observeLocationListSolid(it)
+        })
+        mapViewModel.locationListBroken.observe(activity, Observer {
+            observeLocationListBroken(it)
         })
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -68,6 +77,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        polylineListSolid.forEach { it.remove() }
+        polylineListBroken.forEach { it.remove() }
+        polylineListSolid.clear()
+        polylineListBroken.clear()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -94,19 +111,48 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private fun observeLocationList(locationList: List<LocationItem>) {
         mapViewModel.trackItem = mapViewModel.trackItem.copy(locationList = locationList)
-        val latlngList = locationList.map {
-            LatLng(it.latitude, it.longitude)
+    }
+
+    private fun observeLocationListSolid(locationListSolid: List<List<LocationItem>>) {
+        polylineListSolid.forEach {
+            it.remove()
         }
-        val lineOptions = PolylineOptions()
-            .addAll(latlngList)
-            .width(8f)
-            .color(
-                ContextCompat.getColor(
-                    requireContext(),
-                    R.color.red,
-                ),
-            )
-        polyline = gMap?.addPolyline(lineOptions)
+        polylineListSolid.clear()
+        locationListSolid.forEach { item ->
+            val lineOptions = PolylineOptions()
+                .addAll(item.map { LatLng(it.latitude, it.longitude) })
+                .width(8f)
+                .color(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.red,
+                    ),
+                )
+            gMap?.addPolyline(lineOptions)?.let {
+                polylineListSolid.add(it)
+            }
+        }
+    }
+
+    private fun observeLocationListBroken(locationListBroken: List<List<LocationItem>>) {
+        polylineListBroken.forEach {
+            it.remove()
+        }
+        polylineListBroken.clear()
+        locationListBroken.forEach { item ->
+            val lineOptions = PolylineOptions()
+                .addAll(item.map { LatLng(it.latitude, it.longitude) })
+                .width(8f)
+                .color(
+                    ContextCompat.getColor(
+                        requireContext(),
+                        R.color.blue,
+                    ),
+                )
+            gMap?.addPolyline(lineOptions)?.let {
+                polylineListBroken.add(it)
+            }
+        }
     }
 
     /**

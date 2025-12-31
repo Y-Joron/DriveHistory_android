@@ -55,7 +55,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         applySafeArea(binding.root)
 
-        if (mainViewModel.isRecording()) {
+        val recordingUuid = mainViewModel.getRecordingUuid(this)
+        if (recordingUuid.isNotEmpty() && !LocationService.ALIVE) {
+            // サービスが生きているはずなのに死んでいる場合は、再起動する
+            val trackUuid = mainViewModel.getRecordingUuid(this)
+            startLocationService(trackUuid)
+        }
+
+        if (recordingUuid.isEmpty() && LocationService.ALIVE) {
+            // サービスが死んでいるはずなのに生きている場合は、停止する
+            stopLocationService()
+        }
+
+        if (recordingUuid.isNotEmpty() && LocationService.ALIVE) {
             // 記録中(位置情報サービス起動中)であれば、バインドする
             bindLocationService()
         }
@@ -74,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // Edge to Edge のステータスバー透明化を無効化
-            getWindow().setStatusBarContrastEnforced(true)
+            window.isStatusBarContrastEnforced = true
         }
     }
 

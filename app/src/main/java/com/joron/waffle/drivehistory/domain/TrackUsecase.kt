@@ -5,9 +5,9 @@ import com.joron.waffle.drivehistory.domain.model.LocationItem
 import com.joron.waffle.drivehistory.domain.model.TrackItem
 import com.joron.waffle.drivehistory.domain.type.TrackStatus
 import com.joron.waffle.drivehistory.infrastructure.model.database.TrackEntity
+import com.joron.waffle.drivehistory.infrastructure.repository.PreferenceRepository
 import com.joron.waffle.drivehistory.infrastructure.repository.TrackDbRepository
 import com.joron.waffle.drivehistory.infrastructure.repository.TrackFileRepository
-import com.joron.waffle.drivehistory.infrastructure.repository.TrackRepository
 import com.joron.waffle.drivehistory.util.LocationHelper
 
 class TrackUsecase {
@@ -61,16 +61,20 @@ class TrackUsecase {
         TrackDbRepository.updateTrackStatus(context, trackUuid, status)
     }
 
-    fun getRecordingTrackUuid(): String {
-        return TrackRepository.recordingTrackUuid
+    fun getRecordingTrackUuid(context: Context): String {
+        return PreferenceRepository.getRecordingTrackUuid(context)
     }
 
-    fun isRecording(): Boolean {
-        return TrackRepository.recordingTrackUuid.isNotEmpty()
+    fun isRecording(context: Context): Boolean {
+        return getRecordingTrackUuid(context).isNotEmpty()
     }
 
-    fun setRecordingTrackUuid(uuid: String) {
-        TrackRepository.recordingTrackUuid = uuid
+    fun setRecordingTrackUuid(context: Context, uuid: String) {
+        PreferenceRepository.setRecordingTrackUuid(context, uuid)
+    }
+
+    fun clearRecordingTrackUuid(context: Context) {
+        PreferenceRepository.clearRecordingTrackUuid(context)
     }
 
 }

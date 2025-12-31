@@ -25,12 +25,12 @@ class MainViewModel : ViewModel(), LifecycleEventObserver {
         locationUsecase.notifyUpdateLocation(location)
     }
 
-    fun isRecording(): Boolean {
-        return trackUsecase.isRecording()
+    fun getRecordingUuid(context: Context): String {
+        return trackUsecase.getRecordingTrackUuid(context)
     }
 
     fun load(context: Context) {
-        val recordingTrackUuid = trackUsecase.getRecordingTrackUuid()
+        val recordingTrackUuid = trackUsecase.getRecordingTrackUuid(context)
         viewModelScope.launch(Dispatchers.IO) {
             recordingTrack = trackUsecase.queryTrackItem(
                 context,

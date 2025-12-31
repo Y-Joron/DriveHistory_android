@@ -50,6 +50,7 @@ class LocationService : Service() {
     override fun onCreate() {
         super.onCreate()
         Log.d(TAG, "onCreate() threadName = ${Thread.currentThread().name} ")
+        ALIVE = true
         createLocationApi()
     }
 
@@ -76,7 +77,10 @@ class LocationService : Service() {
             val trackUuid = getStringExtra(KEY_TRACK_UUID) ?: ""
             Log.d(TAG, "applyIntent trackUuid = $trackUuid")
             if (trackUuid.isNotEmpty()) {
-                trackUsecase.setRecordingTrackUuid(trackUuid)
+                trackUsecase.setRecordingTrackUuid(
+                    this@LocationService,
+                    trackUuid,
+                )
             }
         }
     }
@@ -86,6 +90,7 @@ class LocationService : Service() {
         Log.d(TAG, "onDestroy() threadName = ${Thread.currentThread().name} ")
         stopLocationUpdate()
         stopRecording()
+        ALIVE = false
     }
 
     fun stopRecording() {
@@ -93,7 +98,7 @@ class LocationService : Service() {
             // DBからのと、preferenceからのを結合して、軌跡情報を保存する
             val track = trackUsecase.queryTrackItem(
                 this@LocationService,
-                trackUsecase.getRecordingTrackUuid()
+                trackUsecase.getRecordingTrackUuid(this@LocationService)
             )
             val locationsPref = locationUsecase.getLocationPref(this@LocationService)
             Log.d(TAG, "track = $track, locationsPref = $locationsPref")
@@ -105,7 +110,7 @@ class LocationService : Service() {
 
             withContext(Dispatchers.Main) {
                 // 記録停止状態 + Preferenceの軌跡情報消去
-                trackUsecase.setRecordingTrackUuid("")
+                trackUsecase.clearRecordingTrackUuid(this@LocationService)
                 locationUsecase.clearLocationsPref(this@LocationService)
                 serviceScope.cancel()
             }
@@ -177,5 +182,6 @@ class LocationService : Service() {
     companion object {
         private const val TAG = "LocationService"
         const val NOTIFICATION_ID = 101
+        var ALIVE = false
     }
 }
