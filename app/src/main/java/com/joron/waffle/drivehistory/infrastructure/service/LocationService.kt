@@ -102,10 +102,15 @@ class LocationService : Service() {
             )
             val locationsPref = locationUsecase.getLocationPref(this@LocationService)
             Log.d(TAG, "track = $track, locationsPref = $locationsPref")
+            val loList = if (track.locationList.none { it.isNotEmpty() })
+            // 初回の記録の場合
+                listOf(locationsPref)
+            else
+                track.locationList + listOf(locationsPref)
             trackUsecase.updateTrackLocation(
                 this@LocationService,
                 track.trackUuid,
-                track.locationList + locationsPref
+                loList,
             )
 
             withContext(Dispatchers.Main) {

@@ -9,29 +9,33 @@ object LocationHelper {
 
     const val BOUND_OF_ACCURACY = 30f
 
-    fun toLocationList(locationStr: String): List<LocationItem> {
-        val latlngList = locationStr.split("@")
-        return latlngList.mapNotNull {
-            val latlngPair = it.split("$")
-            if (latlngPair.size != 4) {
-                return@mapNotNull null
+    fun toLocationList(locationStr: String): List<List<LocationItem>> {
+        return locationStr.split("|").map { sectionStr ->
+            val latlngList = sectionStr.split("@")
+            return@map latlngList.mapNotNull {
+                val latlngPair = it.split("$")
+                if (latlngPair.size != 4) {
+                    return@mapNotNull null
+                }
+                val lat = latlngPair[0].toDoubleOrNull() ?: return@mapNotNull null
+                val lng = latlngPair[1].toDoubleOrNull() ?: return@mapNotNull null
+                val accuracy = latlngPair[2].toFloatOrNull() ?: return@mapNotNull null
+                val speed = latlngPair[3].toFloatOrNull() ?: return@mapNotNull null
+                LocationItem(
+                    lat,
+                    lng,
+                    accuracy,
+                    speed,
+                )
             }
-            val lat = latlngPair[0].toDoubleOrNull() ?: return@mapNotNull null
-            val lng = latlngPair[1].toDoubleOrNull() ?: return@mapNotNull null
-            val accuracy = latlngPair[2].toFloatOrNull() ?: return@mapNotNull null
-            val speed = latlngPair[3].toFloatOrNull() ?: return@mapNotNull null
-            LocationItem(
-                lat,
-                lng,
-                accuracy,
-                speed,
-            )
         }
     }
 
-    fun toLocationStr(locationList: List<LocationItem>): String {
-        return locationList.joinToString("@") {
-            "${it.latitude}$${it.longitude}$${it.accuracy}$${it.speed}"
+    fun toLocationStr(locationList: List<List<LocationItem>>): String {
+        return locationList.joinToString("|") { sectionList ->
+            sectionList.joinToString("@") {
+                "${it.latitude}$${it.longitude}$${it.accuracy}$${it.speed}"
+            }
         }
     }
 }

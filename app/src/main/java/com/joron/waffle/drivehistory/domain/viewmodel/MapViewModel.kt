@@ -22,16 +22,19 @@ class MapViewModel : ViewModel(), LifecycleEventObserver {
     val trackUsecase = TrackUsecase()
     val locationUsecase = LocationUsecase()
 
+    var loading = MutableLiveData(false)
     var recording = MutableLiveData(false)
 
     // 軌跡全量
-    var locationList = MutableLiveData(emptyList<LocationItem>())
+    var locationMap = MutableLiveData(mapOf<Int, MutableList<LocationItem>>())
 
     // 軌跡実線
-    var locationListSolid = MutableLiveData(emptyList<MutableList<LocationItem>>())
+    var locationMapSolid =
+        MutableLiveData(mapOf<Int, MutableList<MutableList<LocationItem>>>())
 
     // 軌跡破線
-    var locationListBroken = MutableLiveData(emptyList<MutableList<LocationItem>>())
+    var locationMapBroken =
+        MutableLiveData(mapOf<Int, MutableList<MutableList<LocationItem>>>())
 
     var accuracy = MutableLiveData(0f)
     var speed = MutableLiveData(0f)
@@ -45,6 +48,7 @@ class MapViewModel : ViewModel(), LifecycleEventObserver {
 
     fun load(context: Context, trackUuid: String) {
         Log.d(TAG, "enter load")
+        loading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             val tItem = trackUsecase.queryTrackItem(context, trackUuid)
             val recordingUuid = trackUsecase.getRecordingTrackUuid(context)
@@ -56,25 +60,25 @@ class MapViewModel : ViewModel(), LifecycleEventObserver {
             if (tItem.trackUuid == recordingUuid) {
                 // 記録中の場合はPreferenceからの情報を追加する
                 val locationsPref = locationUsecase.getLocationPref(context)
-                tItem.locationList += locationsPref
+                tItem.locationList += listOf(locationsPref)
             }
             withContext(Dispatchers.Main) {
                 recording.value = tItem.trackUuid == recordingUuid
                 trackItem = tItem
-                var listResult = LocationListResult(
-                    locationList.value ?: emptyList(),
-                    locationListSolid.value ?: emptyList(),
-                    locationListBroken.value ?: emptyList(),
-                )
-                tItem.locationList.forEach {
-                    listResult = createLineList(
-                        it,
-                        listResult,
-                    )
+                var listResult = LocationListResult()
+                tItem.locationList.forEachIndexed { sectionIndex, sectionList ->
+                    sectionList.forEach {
+                        listResult = createLineList(
+                            sectionIndex,
+                            it,
+                            listResult,
+                        )
+                    }
                 }
-                locationList.value = listResult.locationList
-                locationListSolid.value = listResult.locationListSolid
-                locationListBroken.value = listResult.locationListBroken
+                this@MapViewModel.locationMap.value = listResult.locationMap
+                this@MapViewModel.locationMapSolid.value = listResult.locationMapSolid
+                this@MapViewModel.locationMapBroken.value = listResult.locationMapBroken
+                loading.value = false
             }
         }
     }
@@ -106,18 +110,24 @@ class MapViewModel : ViewModel(), LifecycleEventObserver {
             TAG,
             "onUpdateLocation latitude = ${location.latitude}, longitude = ${location.longitude}"
         )
+        var sectionIndex = lastSectionIndex()
+        if (sectionIndex < 0) {
+            // 軌跡Mapにkeyが存在しない場合は0としてMapを生成する (fail safe)
+            sectionIndex = 0
+        }
         val listResult = createLineList(
+            sectionIndex,
             location,
             LocationListResult(
-                locationList.value ?: return,
-                locationListSolid.value ?: return,
-                locationListBroken.value ?: return,
-            )
+                locationMap.value ?: return,
+                locationMapSolid.value ?: return,
+                locationMapBroken.value ?: return,
+            ),
         )
-        locationList.value = listResult.locationList
-        locationListSolid.value = listResult.locationListSolid
-        locationListBroken.value = listResult.locationListBroken
-        listResult.locationList.lastOrNull()?.let {
+        locationMap.value = listResult.locationMap
+        locationMapSolid.value = listResult.locationMapSolid
+        locationMapBroken.value = listResult.locationMapBroken
+        listResult.locationMap[sectionIndex]?.lastOrNull()?.let {
             accuracy.value = it.accuracy
             speed.value = it.speed
             speed2.value = it.speed * 3.6f
@@ -126,14 +136,21 @@ class MapViewModel : ViewModel(), LifecycleEventObserver {
     }
 
     private fun createLineList(
+        sectionIndex: Int,
         location: LocationItem,
         base: LocationListResult
     ): LocationListResult {
-        val loList = base.locationList.toMutableList()
+        val loMap = base.locationMap.toMutableMap()
+        loMap.putIfAbsent(sectionIndex, mutableListOf())
+        val loList = loMap[sectionIndex] ?: mutableListOf()
         val lastLocationItem = loList.lastOrNull()
-        val loListSolid = base.locationListSolid.toMutableList()
+        val loMapSolid = base.locationMapSolid.toMutableMap()
+        loMapSolid.putIfAbsent(sectionIndex, mutableListOf())
+        val loListSolid = loMapSolid[sectionIndex] ?: mutableListOf()
         val loCurrentListSolid = loListSolid.lastOrNull() ?: mutableListOf()
-        val loListBroken = base.locationListBroken.toMutableList()
+        val loMapBroken = base.locationMapBroken.toMutableMap()
+        loMapBroken.putIfAbsent(sectionIndex, mutableListOf())
+        val loListBroken = loMapBroken[sectionIndex] ?: mutableListOf()
         val loCurrentListBroken = loListBroken.lastOrNull() ?: mutableListOf()
         loList += location
         if (location.accurate) {
@@ -161,13 +178,14 @@ class MapViewModel : ViewModel(), LifecycleEventObserver {
         }
         // 新しい軌跡情報返却
         return LocationListResult(
-            loList,
-            loListSolid,
-            loListBroken,
+            loMap,
+            loMapSolid,
+            loMapBroken,
         )
     }
 
     fun startRecording() {
+        createListToMap()
         recording.value = true
     }
 
@@ -175,10 +193,31 @@ class MapViewModel : ViewModel(), LifecycleEventObserver {
         recording.value = false
     }
 
+    private fun createListToMap() {
+        val sectionIndex = lastSectionIndex()
+        val loMap = locationMap.value?.toMutableMap() ?: return
+        val loMapSolid = locationMapSolid.value?.toMutableMap() ?: return
+        val loMapBroken = locationMapBroken.value?.toMutableMap() ?: return
+        loMap.putIfAbsent(sectionIndex + 1, mutableListOf())
+        loMapSolid.putIfAbsent(sectionIndex + 1, mutableListOf())
+        loMapBroken.putIfAbsent(sectionIndex + 1, mutableListOf())
+        locationMap.value = loMap
+        locationMapSolid.value = loMapSolid
+        locationMapBroken.value = loMapBroken
+    }
+
+    /**
+     * 軌跡Mapの最後のキー(Index)を取得する
+     * キーが1件も存在しない場合は-1を返す
+     */
+    private fun lastSectionIndex(): Int {
+        return locationMap.value?.toSortedMap()?.keys?.lastOrNull() ?: -1
+    }
+
     private data class LocationListResult(
-        val locationList: List<LocationItem> = emptyList(),
-        val locationListSolid: List<MutableList<LocationItem>> = emptyList(),
-        val locationListBroken: List<MutableList<LocationItem>> = emptyList(),
+        val locationMap: Map<Int, MutableList<LocationItem>> = emptyMap(),
+        val locationMapSolid: Map<Int, MutableList<MutableList<LocationItem>>> = emptyMap(),
+        val locationMapBroken: Map<Int, MutableList<MutableList<LocationItem>>> = emptyMap(),
     )
 
     companion object {

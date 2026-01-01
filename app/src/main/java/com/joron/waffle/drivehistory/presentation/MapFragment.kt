@@ -60,15 +60,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mapViewModel.recording.observe(activity, Observer {
             observeRecording(it)
         })
-        mapViewModel.locationList.observe(activity, Observer {
+        mapViewModel.locationMap.observe(activity, Observer {
             Log.d(TAG, "qqqqq it = $it")
-            observeLocationList(it)
+            observeLocationMap(it)
         })
-        mapViewModel.locationListSolid.observe(activity, Observer {
-            observeLocationListSolid(it)
+        mapViewModel.locationMapSolid.observe(activity, Observer {
+            observeLocationMapSolid(it)
         })
-        mapViewModel.locationListBroken.observe(activity, Observer {
-            observeLocationListBroken(it)
+        mapViewModel.locationMapBroken.observe(activity, Observer {
+            observeLocationMapBroken(it)
         })
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -109,48 +109,54 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         )
     }
 
-    private fun observeLocationList(locationList: List<LocationItem>) {
-        mapViewModel.trackItem = mapViewModel.trackItem.copy(locationList = locationList)
+    private fun observeLocationMap(locationMap: Map<Int, List<LocationItem>>) {
+        mapViewModel.trackItem = mapViewModel.trackItem.copy(
+            locationList = locationMap.toSortedMap().values.toList(),
+        )
     }
 
-    private fun observeLocationListSolid(locationListSolid: List<List<LocationItem>>) {
+    private fun observeLocationMapSolid(locationMapSolid: Map<Int, List<List<LocationItem>>>) {
         polylineListSolid.forEach {
             it.remove()
         }
         polylineListSolid.clear()
-        locationListSolid.forEach { item ->
-            val lineOptions = PolylineOptions()
-                .addAll(item.map { LatLng(it.latitude, it.longitude) })
-                .width(8f)
-                .color(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.red,
-                    ),
-                )
-            gMap?.addPolyline(lineOptions)?.let {
-                polylineListSolid.add(it)
+        locationMapSolid.forEach { entry ->
+            entry.value.forEach { locationList ->
+                val lineOptions = PolylineOptions()
+                    .addAll(locationList.map { LatLng(it.latitude, it.longitude) })
+                    .width(8f)
+                    .color(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.red,
+                        ),
+                    )
+                gMap?.addPolyline(lineOptions)?.let {
+                    polylineListSolid.add(it)
+                }
             }
         }
     }
 
-    private fun observeLocationListBroken(locationListBroken: List<List<LocationItem>>) {
+    private fun observeLocationMapBroken(locationMapBroken: Map<Int, List<List<LocationItem>>>) {
         polylineListBroken.forEach {
             it.remove()
         }
         polylineListBroken.clear()
-        locationListBroken.forEach { item ->
-            val lineOptions = PolylineOptions()
-                .addAll(item.map { LatLng(it.latitude, it.longitude) })
-                .width(8f)
-                .color(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        R.color.blue,
-                    ),
-                )
-            gMap?.addPolyline(lineOptions)?.let {
-                polylineListBroken.add(it)
+        locationMapBroken.forEach { entry ->
+            entry.value.forEach { locationList ->
+                val lineOptions = PolylineOptions()
+                    .addAll(locationList.map { LatLng(it.latitude, it.longitude) })
+                    .width(8f)
+                    .color(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.blue,
+                        ),
+                    )
+                gMap?.addPolyline(lineOptions)?.let {
+                    polylineListBroken.add(it)
+                }
             }
         }
     }

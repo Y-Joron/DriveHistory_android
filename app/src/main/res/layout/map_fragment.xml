@@ -104,7 +104,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
+            android:enabled="@{!mapViewModel.loading}"
             app:backgroundTint="@color/accent"
+            android:alpha="@{mapViewModel.loading ? 0.3f : 1.0f}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

@@ -44,7 +44,7 @@ class TrackUsecase {
     fun updateTrackLocation(
         context: Context,
         trackUuid: String,
-        locationList: List<LocationItem>,
+        locationList: List<List<LocationItem>>,
     ) {
         TrackFileRepository.writeLocations(
             context,

@@ -10,7 +10,7 @@ data class TrackItem(
     val activeType: ActiveType = ActiveType.UNKNOWN,
     val status: TrackStatus = TrackStatus.INITIALIZE,
     val title: String = "",
-    var locationList: List<LocationItem> = emptyList(),
+    var locationList: List<List<LocationItem>> = emptyList(),
     val createdTime: Long = 0,
 ) {
     val valid: Boolean

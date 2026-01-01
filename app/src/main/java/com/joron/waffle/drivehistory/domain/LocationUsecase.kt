@@ -22,11 +22,13 @@ class LocationUsecase {
 
     fun getLocationPref(context: Context): List<LocationItem> {
         val locations = PreferenceRepository.getLocations(context)
-        return LocationHelper.toLocationList(locations)
+        // Preferenceへの軌跡情報は、停止文字を含まないので常にサイズ1
+        return LocationHelper.toLocationList(locations).firstOrNull()
+            ?: emptyList()
     }
 
     fun saveLocationsPref(context: Context, locationList: List<LocationItem>) {
-        val locations = LocationHelper.toLocationStr(locationList)
+        val locations = LocationHelper.toLocationStr(listOf(locationList))
         PreferenceRepository.saveLocations(context, locations)
     }
 
