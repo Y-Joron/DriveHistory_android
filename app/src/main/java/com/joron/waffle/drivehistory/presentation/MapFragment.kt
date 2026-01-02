@@ -17,7 +17,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.Dash
+import com.google.android.gms.maps.model.Gap
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PatternItem
 import com.google.android.gms.maps.model.Polyline
 import com.google.android.gms.maps.model.PolylineOptions
 import com.joron.waffle.drivehistory.R
@@ -143,6 +146,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             it.remove()
         }
         polylineListBroken.clear()
+
+        // 破線パターン（数値は好みで調整）
+        val pattern: List<PatternItem> = listOf(
+            Dash(12f), // 線の長さ
+            Gap(12f)   // 隙間の長さ
+        )
         locationMapBroken.forEach { entry ->
             entry.value.forEach { locationList ->
                 val lineOptions = PolylineOptions()
@@ -151,9 +160,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     .color(
                         ContextCompat.getColor(
                             requireContext(),
-                            R.color.blue,
+                            R.color.gray,
                         ),
                     )
+                    .pattern(pattern)
                 gMap?.addPolyline(lineOptions)?.let {
                     polylineListBroken.add(it)
                 }
