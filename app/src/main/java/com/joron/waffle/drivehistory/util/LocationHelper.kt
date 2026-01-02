@@ -14,18 +14,20 @@ object LocationHelper {
             val latlngList = sectionStr.split("@")
             return@map latlngList.mapNotNull {
                 val latlngPair = it.split("$")
-                if (latlngPair.size != 4) {
+                if (latlngPair.size != 5) {
                     return@mapNotNull null
                 }
                 val lat = latlngPair[0].toDoubleOrNull() ?: return@mapNotNull null
                 val lng = latlngPair[1].toDoubleOrNull() ?: return@mapNotNull null
                 val accuracy = latlngPair[2].toFloatOrNull() ?: return@mapNotNull null
                 val speed = latlngPair[3].toFloatOrNull() ?: return@mapNotNull null
+                val unixTime = latlngPair[4].toLongOrNull() ?: return@mapNotNull null
                 LocationItem(
                     lat,
                     lng,
                     accuracy,
                     speed,
+                    unixTime,
                 )
             }
         }
@@ -34,7 +36,7 @@ object LocationHelper {
     fun toLocationStr(locationList: List<List<LocationItem>>): String {
         return locationList.joinToString("|") { sectionList ->
             sectionList.joinToString("@") {
-                "${it.latitude}$${it.longitude}$${it.accuracy}$${it.speed}"
+                "${it.latitude}$${it.longitude}$${it.accuracy}$${it.speed}$${it.unixTime}"
             }
         }
     }
