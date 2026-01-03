@@ -1,0 +1,38 @@
+
+build/
+captures/
+.externalNativeBuild
+
+# built application files
+*.ap_
+ 
+# files for the dex VM
+*.dex
+ 
+# Java class files
+*.class
+
+# IntelliJ IDEA project files
+.idea/
+*.ipr
+*.iml
+
+# generated files
+bin/
+gen/
+build/
+
+# Local configuration file (sdk path, etc)
+# gradle-wrapper.properties
+local.properties
+.gradle/
+.settings/
+
+# temporary files
+debug
+*.jar
+*.bat
+gradlew
+# *.pro
+
+google_maps_api.xml
